@@ -1,7 +1,7 @@
 package errors
 
-import "errors"
+import nerrors "errors"
 
 func Is(err, target error) bool {
-	return errors.Is(err, target)
+	return nerrors.Is(err, target)
 }
