@@ -32,7 +32,7 @@ func (paging *Paging) ToString() string {
 		paging.Size, paging.Numb, paging.Total, paging.Count)
 }
 
-func (paging *Paging) WithCount(count int64) {
+func (paging *Paging) WithCount(count int64) *Paging {
 	if paging.Size == 0 {
 		paging.Size = DefaultPagingSize
 	}
@@ -43,7 +43,7 @@ func (paging *Paging) WithCount(count int64) {
 	if count == 0 {
 		paging.Total = 0
 		paging.Numb = FirstPage
-		return
+		return paging
 	}
 	paging.Count = count
 	paging.Total = paging.Count / paging.Size
@@ -58,6 +58,7 @@ func (paging *Paging) WithCount(count int64) {
 	if paging.Numb < 1 {
 		paging.Numb = 1
 	}
+	return paging
 }
 
 func (paging *Paging) Skip() int64 {
@@ -68,14 +69,14 @@ func (paging *Paging) Limit() int64 {
 	return paging.Size
 }
 
-func PagingOfPage(page *Page) Paging {
+func PagingOfPage(page *Page) *Paging {
 	if page == nil {
 		return PagingOf(DefaultPagingSize, FirstPage)
 	}
 	return PagingOf(page.Size, page.Numb)
 }
 
-func PagingOf(size int64, current int64) Paging {
+func PagingOf(size int64, current int64) *Paging {
 	if size <= 0 {
 		size = DefaultPagingSize
 	}
@@ -85,7 +86,7 @@ func PagingOf(size int64, current int64) Paging {
 	if current < FirstPage {
 		current = FirstPage
 	}
-	return Paging{
+	return &Paging{
 		Size:  size,
 		Numb:  current,
 		Total: 0,
@@ -93,7 +94,7 @@ func PagingOf(size int64, current int64) Paging {
 	}
 }
 
-func PagingALL() Paging {
+func PagingALL() *Paging {
 	return PagingOf(MaxPagingSize, FirstPage)
 }
 
