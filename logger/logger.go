@@ -86,7 +86,10 @@ func GetLogger(key string) *zap.Logger {
 	}
 
 	if sys.RunMode.IsRd() {
-		writeSyncers = append(writeSyncers, zapcore.AddSync(os.Stdout))
+		logWithStdout := configure.GetBool("logger.std.out", false)
+		if logWithStdout {
+			writeSyncers = append(writeSyncers, zapcore.AddSync(os.Stdout))
+		}
 	}
 
 	core := zapcore.NewCore(
