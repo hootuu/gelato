@@ -23,7 +23,7 @@ func main() {
 		3:   true,
 		4:   4.0,
 		true: &User{
-			Name:   "jack",
+			Name:   "jack.ma",
 			Age:    20,
 			Height: 180,
 		},
