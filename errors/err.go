@@ -72,5 +72,8 @@ func (e *Error) GetMessage() string {
 }
 
 func (e *Error) Native() error {
+	if e.Err == nil {
+		return errors.New(fmt.Sprintf("[%s] %s", e.Code, e.Message))
+	}
 	return e.Err
 }
