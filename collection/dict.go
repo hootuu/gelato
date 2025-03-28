@@ -1,5 +1,7 @@
 package collection
 
+import "github.com/hootuu/gelato/strs"
+
 type Dict struct {
 	m map[string]interface{}
 }
@@ -22,4 +24,9 @@ func (d *Dict) GetString(key string) string {
 		return s
 	}
 	return ""
+}
+
+func (d *Dict) GetUint64(key string) uint64 {
+	str := d.GetString(key)
+	return strs.ToUint64(str)
 }
