@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/hootuu/gelato/io/serializer"
+	"time"
 )
 
 type User struct {
@@ -12,6 +13,10 @@ type User struct {
 }
 
 func main() {
+	x := int64(1743219111820)
+	mT := time.UnixMilli(x)
+	t := time.Unix(mT.Unix(), 0)
+	fmt.Println(t)
 	dict := map[interface{}]interface{}{
 		"D": "XX",
 		"A": "B",
