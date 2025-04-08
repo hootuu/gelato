@@ -20,6 +20,13 @@ func PageALL() *Page {
 	}
 }
 
+func PageNormal() *Page {
+	return &Page{
+		Size: DefaultPagingSize,
+		Numb: FirstPage,
+	}
+}
+
 type Paging struct {
 	Size  int64 `json:"size"`  // Page Size, default 100
 	Numb  int64 `json:"numb"`  // Page Numb, From One
@@ -47,7 +54,7 @@ func (paging *Paging) WithCount(count int64) *Paging {
 	}
 	paging.Count = count
 	paging.Total = paging.Count / paging.Size
-	if paging.Total%paging.Size != 0 {
+	if paging.Count%paging.Size != 0 {
 		paging.Total += 1
 	}
 
@@ -99,11 +106,11 @@ func PagingALL() *Paging {
 }
 
 type Pagination[T any] struct {
-	Paging Paging `bson:"paging" json:"paging"`
-	Data   []*T   `bson:"data" json:"data"`
+	Paging *Paging `bson:"paging" json:"paging"`
+	Data   []*T    `bson:"data" json:"data"`
 }
 
-func NewPagination[T any](paging Paging, data []*T) *Pagination[T] {
+func NewPagination[T any](paging *Paging, data []*T) *Pagination[T] {
 	return &Pagination[T]{
 		Paging: paging,
 		Data:   data,

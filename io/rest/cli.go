@@ -103,7 +103,7 @@ func Call[REQ any, RESP any](rest *Rest, path string, req *Request[REQ], priKey 
 	_, nErr := cli.R().SetBody(bodyDataBytes).SetResult(&resp).Post(path)
 	if nErr != nil {
 		gLogger.Error("resty.call err", zap.Error(nErr))
-		return FailResponse[RESP](req.ID, errors.System("rest err:"+nErr.Error(), nErr))
+		return FailResponse[RESP](req.ID, errors.System("rest error:"+nErr.Error(), nErr))
 	}
 	return &resp
 }
