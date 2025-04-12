@@ -32,6 +32,15 @@ func JsonOf[T any](str string) (*T, *errors.Error) {
 	return &obj, nil
 }
 
+func JsonOfBytes[T any](data []byte) (*T, *errors.Error) {
+	var obj T
+	err := json.Unmarshal(data, &obj)
+	if err != nil {
+		return nil, errors.Verify("invalid from json byres", err)
+	}
+	return &obj, nil
+}
+
 func JsonMustOf[T any](str string) *T {
 	obj, _ := JsonOf[T](str)
 	return obj

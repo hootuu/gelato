@@ -103,10 +103,12 @@ func GetLogger(key string) *zap.Logger {
 	return zap.New(core)
 }
 
+var Error *zap.Logger
 var Logger *zap.Logger
 var Console *zap.Logger
 
 func init() {
+	Error = GetLogger("errors")
 	Logger = GetLogger("commons")
 	Console = GetLogger("console")
 	if !sys.RunMode.IsRd() {
