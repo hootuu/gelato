@@ -19,20 +19,47 @@ func NewSingle() *Single {
 	}
 }
 
+//	func (s *Single) Do(key string, call func() *errors.Error) *errors.Error {
+//		s.mu.RLock()
+//		var singleMu *sync.Mutex
+//		muObj, found := s.muCache.Get(key)
+//		if !found {
+//			s.mu.RUnlock()
+//			s.mu.Lock()
+//			singleMu = &sync.Mutex{}
+//			s.muCache.SetDefault(key, singleMu)
+//			s.mu.Unlock()
+//		} else {
+//			singleMu = muObj.(*sync.Mutex)
+//			s.mu.RUnlock()
+//		}
+//		singleMu.Lock()
+//		defer singleMu.Unlock()
+//		return call()
+//	}
+
 func (s *Single) Do(key string, call func() *errors.Error) *errors.Error {
 	s.mu.RLock()
-	var singleMu *sync.Mutex
-	muObj, found := s.muCache.Get(key)
-	if !found {
+	if muObj, found := s.muCache.Get(key); found {
 		s.mu.RUnlock()
-		s.mu.Lock()
-		singleMu = &sync.Mutex{}
-		s.muCache.SetDefault(key, singleMu)
-		s.mu.Unlock()
-	} else {
-		singleMu = muObj.(*sync.Mutex)
-		s.mu.RUnlock()
+		singleMu := muObj.(*sync.Mutex)
+		singleMu.Lock()
+		defer singleMu.Unlock()
+		return call()
 	}
+	s.mu.RUnlock()
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if muObj, found := s.muCache.Get(key); found {
+		singleMu := muObj.(*sync.Mutex)
+		singleMu.Lock()
+		defer singleMu.Unlock()
+		return call()
+	}
+
+	singleMu := &sync.Mutex{}
+	s.muCache.SetDefault(key, singleMu)
 	singleMu.Lock()
 	defer singleMu.Unlock()
 	return call()
