@@ -9,7 +9,7 @@ import (
 
 func JSON2Bytes(obj interface{}) ([]byte, *errors.Error) {
 	if obj == nil {
-
+		return nil, nil
 	}
 	data, err := json.Marshal(obj)
 	if err != nil {

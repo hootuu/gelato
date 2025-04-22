@@ -111,6 +111,9 @@ type Pagination[T any] struct {
 }
 
 func NewPagination[T any](paging *Paging, data []*T) *Pagination[T] {
+	if data == nil {
+		data = make([]*T, 0)
+	}
 	return &Pagination[T]{
 		Paging: paging,
 		Data:   data,

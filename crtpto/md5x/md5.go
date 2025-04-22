@@ -2,10 +2,24 @@ package md5x
 
 import (
 	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"regexp"
 )
+
+func New(prefix string, split string, paras ...string) string {
+	if len(paras) == 0 {
+		return ""
+	}
+	h := md5.New()
+	h.Write([]byte(prefix))
+	for _, s := range paras {
+		h.Write([]byte(split))
+		h.Write([]byte(s))
+	}
+	return hex.EncodeToString(h.Sum(nil))
+}
 
 func MD5(str string) string {
 	hash := md5.New()
