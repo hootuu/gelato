@@ -47,6 +47,9 @@ func JSONByBytes[T any](bData []byte) (*T, *errors.Error) {
 	var obj T
 	err := json.Unmarshal(bData, &obj)
 	if err != nil {
+		logger.Error.Error("JSONByBytes: err",
+			zap.Error(err),
+			zap.String("json", string(bData)))
 		return nil, errors.Verify("invalid from json bytes", err)
 	}
 	return &obj, nil
@@ -55,7 +58,9 @@ func JSONByBytes[T any](bData []byte) (*T, *errors.Error) {
 func MustJSONByBytes[T any](bData []byte) *T {
 	obj, err := JSONByBytes[T](bData)
 	if err != nil {
-		logger.Error.Error("MustJSONByBytes: err", zap.Error(err))
+		logger.Error.Error("MustJSONByBytes: err",
+			zap.Error(err),
+			zap.String("json", string(bData)))
 		return nil
 	}
 	return obj

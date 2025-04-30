@@ -8,6 +8,7 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 	"strings"
+	"sync"
 )
 
 type Level = string
@@ -36,7 +37,26 @@ func LevelOf(level Level) zapcore.Level {
 	return zapLevel
 }
 
+var gLoggerMap = make(map[string]*zap.Logger)
+var gLoggerMu sync.Mutex
+
 func GetLogger(key string) *zap.Logger {
+	l, ok := gLoggerMap[key]
+	if ok {
+		return l
+	}
+	gLoggerMu.Lock()
+	defer gLoggerMu.Unlock()
+	l, ok = gLoggerMap[key]
+	if ok {
+		return l
+	}
+	l = newLogger(key)
+	gLoggerMap[key] = l
+	return l
+}
+
+func newLogger(key string) *zap.Logger {
 	rootPath := configure.GetString("logger."+key+".root", "./.logs/"+key+"/")
 	logLevel := configure.GetString("logger."+key+".level", "debug")
 	fileName := rootPath + configure.GetString("logger."+key+".file", key+".jsonl")
